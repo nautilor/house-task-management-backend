@@ -19,7 +19,10 @@ class Task {
   @Column({ default: 0, nullable: false })
   points!: number;
 
-  @ManyToOne(() => Category, (category) => category.tasks, { nullable: false })
+  @ManyToOne(() => Category, (category) => category.tasks, {
+    nullable: false,
+    eager: true,
+  })
   category!: Category;
 
   @OneToMany(() => Completion, (completion) => completion.task)

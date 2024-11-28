@@ -1,5 +1,9 @@
 import Completion from "@/model/Completion";
+import Task from "@/model/Task";
+import User from "@/model/User";
 import { CompletionRepository } from "@/repository/CompletionRepository";
+import { TaskRepository } from "@/repository/TaskRepository";
+import { UserRepository } from "@/repository/UserRepository";
 import { Router } from "express";
 
 const COMPLETION_BASE_PATH = "/completions";
@@ -16,6 +20,14 @@ const completionRoute = () => {
 
   router.post("/", async (req, res) => {
     const completion: Completion = await CompletionRepository.save(req.body);
+    const user: User | null = await UserRepository.findOneBy({
+      id: completion.user.id,
+    });
+    const task: Task | null = await TaskRepository.findOneBy({
+      id: completion.task.id,
+    });
+    user!.points += task!.points;
+    await UserRepository.save(user!);
     res.send(completion);
   });
 
@@ -53,6 +65,14 @@ const completionRoute = () => {
       res.status(404).send("Completion not found");
       return;
     }
+    const user: User | null = await UserRepository.findOneBy({
+      id: completion.user.id,
+    });
+    const task: Task | null = await TaskRepository.findOneBy({
+      id: completion.task.id,
+    });
+    user!.points -= task!.points;
+    await UserRepository.save(user!);
     await CompletionRepository.remove(completion);
     res.send("Completion deleted");
   });

@@ -11,10 +11,16 @@ class Completion {
   @Column({ default: new Date(), nullable: false })
   timestamp!: Date;
 
-  @ManyToOne(() => User, (user) => user.completions, { nullable: false })
+  @ManyToOne(() => User, (user) => user.completions, {
+    nullable: false,
+    eager: true,
+  })
   user!: User;
 
-  @ManyToOne(() => Task, (task) => task.completions, { nullable: false })
+  @ManyToOne(() => Task, (task) => task.completions, {
+    nullable: false,
+    eager: true,
+  })
   task!: Task;
 }
 

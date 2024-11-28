@@ -9,7 +9,13 @@ const taskRoute = () => {
 
   router.get("/", async (req, res) => {
     const tasks: Task[] = await TaskRepository.find({
-      order: { name: "ASC" },
+      order: {
+        category: {
+          name: "ASC",
+        },
+        name: "ASC",
+      },
+      relations: ["completions"],
     });
     res.send(tasks);
   });
