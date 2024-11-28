@@ -1,8 +1,8 @@
 import express, { Router } from "express";
 
-export const HELLO_BASE_PATH = "/hello";
+const HELLO_BASE_PATH = "/hello";
 
-const HelloRoute = () => {
+const helloRoute = () => {
   const router = Router();
 
   router.get("/", (_, res) => {
@@ -12,4 +12,4 @@ const HelloRoute = () => {
   return router;
 };
 
-export default HelloRoute;
+export { HELLO_BASE_PATH, helloRoute };

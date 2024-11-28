@@ -4,6 +4,8 @@
     "module": "commonjs",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
+		"experimentalDecorators": true,
+		"emitDecoratorMetadata": true,
     "strict": true,
     "skipLibCheck": true,
 		"outDir": "./dist",
@@ -12,7 +14,8 @@
 			"@/*": ["src/*"],
 			"@model/*": ["src/model/*"],
 			"@controller/*": ["src/controller/*"],
-			"@middleware/*": ["src/middleware/*"],
+			"@repository/*": ["src/repository/*"],
+			"@config/*": ["src/config/*"],
 		}
   },
 	"include": ["./src/**/*", "./src/index.ts", "./tests/**/*"],
