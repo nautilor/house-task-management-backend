@@ -8,7 +8,10 @@ const taskRoute = () => {
   const router = Router();
 
   router.get("/", async (req, res) => {
+    const categoryId: string = req.query.categoryId as string;
+    const where = categoryId ? { category: { id: categoryId } } : {};
     const tasks: Task[] = await TaskRepository.find({
+      where,
       order: {
         category: {
           name: "ASC",
