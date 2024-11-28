@@ -10,9 +10,9 @@
 		"rootDir": "./src",
 		"paths": {
 			"@/*": ["src/*"],
-			"@models/*": ["src/models/*"],
-			"@controllers/*": ["src/controllers/*"],
-			"@helpers/*": ["src/helpers/*"],
+			"@model/*": ["src/model/*"],
+			"@controller/*": ["src/controller/*"],
+			"@middleware/*": ["src/middleware/*"],
 		}
   },
 	"include": ["./src/**/*", "./src/index.ts", "./tests/**/*"],

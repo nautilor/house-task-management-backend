@@ -2,14 +2,14 @@ import express, { Router } from "express";
 
 export const HELLO_BASE_PATH = "/hello";
 
-const helloRoute = () => {
+const HelloRoute = () => {
   const router = Router();
 
-  router.get("/", (req, res) => {
-    res.json({ message: "Hello, World!" });
+  router.get("/", (_, res) => {
+    res.json({ Hello: "World!" });
   });
 
   return router;
 };
 
-export default helloRoute;
+export default HelloRoute;
