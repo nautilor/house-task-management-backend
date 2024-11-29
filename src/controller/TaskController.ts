@@ -1,69 +1,62 @@
+import { TaskMiddleware } from "@/middleware/TaskMiddleware";
 import Task from "@/model/Task";
-import { TaskRepository } from "@/repository/TaskRepository";
-import { Router } from "express";
+import { TaskParams } from "@/param/TaskParams";
+import { Request, Router } from "express";
 
 const TASK_BASE_PATH = "/tasks";
 
 const taskRoute = () => {
   const router = Router();
+  type FindRequest = Request<{}, any, any, TaskParams>;
 
-  router.get("/", async (req, res) => {
-    const categoryId: string = req.query.categoryId as string;
-    const where = categoryId ? { category: { id: categoryId } } : {};
-    const tasks: Task[] = await TaskRepository.find({
-      where,
-      order: {
-        category: {
-          name: "ASC",
-        },
-        name: "ASC",
-      },
-      relations: ["completions"],
-    });
-    res.send(tasks);
-  });
-
-  router.post("/", async (req, res) => {
-    const task: Task = await TaskRepository.save(req.body);
-    res.send(task);
-  });
-
-  router.get("/:id", async (req, res) => {
-    const id: string = req.params.id;
-    const task: Task | null = await TaskRepository.findOneBy({
-      id,
-    });
-    if (!task) {
-      res.status(404).send("Task not found");
-      return;
+  router.get("/", async (req: FindRequest, res, next) => {
+    try {
+      const tasks: Task[] = await TaskMiddleware.find(req.query);
+      res.send(tasks);
+    } catch (e) {
+      next(e);
     }
-    res.send(task);
   });
 
-  router.post("/:id", async (req, res) => {
-    const id: string = req.params.id;
-    const task: Task | null = await TaskRepository.findOneBy({
-      id,
-    });
-    if (!task) {
-      res.status(404).send("Task not found");
-      return;
+  router.post("/", async (req, res, next) => {
+    try {
+      const task: Task = req.body;
+      const newTask = await TaskMiddleware.create(task);
+      res.send(newTask);
+    } catch (e) {
+      next(e);
     }
-    await TaskRepository.save({ ...task, ...req.body });
-    res.send(task);
   });
 
-  router.delete("/:id", async (req, res) => {
-    const id: string = req.params.id;
-    const task: Task | null = await TaskRepository.findOneBy({
-      id,
-    });
-    if (!task) {
-      res.status(404).send("Task not found");
-      return;
+  router.get("/:id", async (req, res, next) => {
+    try {
+      const id: string = req.params.id;
+      const task: Task = await TaskMiddleware.findOne(id);
+      res.send(task);
+    } catch (e) {
+      next(e);
     }
-    await TaskRepository.remove(task);
-    res.send("Task deleted");
+  });
+
+  router.post("/:id", async (req, res, next) => {
+    try {
+      const id: string = req.params.id;
+      const data: Task = req.body;
+      const task: Task = await TaskMiddleware.update(id, data);
+      res.send(task);
+    } catch (e) {
+      next(e);
+    }
+  });
+
+  router.delete("/:id", async (req, res, next) => {
+    try {
+      const id: string = req.params.id;
+      const name = await TaskMiddleware.delete(id);
+      res.json({ message: `Succesfully removed task: ${name}` });
+    } catch (e) {
+      next(e);
+    }
   });
 
   return router;

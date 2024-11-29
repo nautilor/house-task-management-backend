@@ -1,80 +1,67 @@
+import { CompletionMiddleware } from "@/middleware/CompletionMiddleware";
 import Completion from "@/model/Completion";
-import Task from "@/model/Task";
-import User from "@/model/User";
-import { CompletionRepository } from "@/repository/CompletionRepository";
-import { TaskRepository } from "@/repository/TaskRepository";
-import { UserRepository } from "@/repository/UserRepository";
-import { Router } from "express";
+import { CompletionParams } from "@/param/CompletionParams";
+import { Router, Request } from "express";
 
 const COMPLETION_BASE_PATH = "/completions";
 
 const completionRoute = () => {
   const router = Router();
+  type FindRequest = Request<{}, any, any, CompletionParams>;
 
-  router.get("/", async (req, res) => {
-    const completions: Completion[] = await CompletionRepository.find({
-      order: { timestamp: "ASC" },
-    });
-    res.send(completions);
-  });
-
-  router.post("/", async (req, res) => {
-    const completion: Completion = await CompletionRepository.save(req.body);
-    const user: User | null = await UserRepository.findOneBy({
-      id: completion.user.id,
-    });
-    const task: Task | null = await TaskRepository.findOneBy({
-      id: completion.task.id,
-    });
-    user!.points += task!.points;
-    await UserRepository.save(user!);
-    res.send(completion);
-  });
-
-  router.get("/:id", async (req, res) => {
-    const id: string = req.params.id;
-    const completion: Completion | null = await CompletionRepository.findOneBy({
-      id,
-    });
-    if (!completion) {
-      res.status(404).send("Completion not found");
-      return;
+  router.get("/", async (req: FindRequest, res, next) => {
+    try {
+      const completions: Completion[] = await CompletionMiddleware.find(
+        req.query,
+      );
+      res.send(completions);
+    } catch (e) {
+      next(e);
     }
-    res.send(completion);
   });
 
-  router.post("/:id", async (req, res) => {
-    const id: string = req.params.id;
-    const completion: Completion | null = await CompletionRepository.findOneBy({
-      id,
-    });
-    if (!completion) {
-      res.status(404).send("Completion not found");
-      return;
+  router.post("/", async (req, res, next) => {
+    try {
+      const completion: Completion = req.body;
+      const newCompletion = await CompletionMiddleware.create(completion);
+      res.send(newCompletion);
+    } catch (e) {
+      next(e);
     }
-    await CompletionRepository.save({ ...completion, ...req.body });
-    res.send(completion);
   });
 
-  router.delete("/:id", async (req, res) => {
-    const id: string = req.params.id;
-    const completion: Completion | null = await CompletionRepository.findOneBy({
-      id,
-    });
-    if (!completion) {
-      res.status(404).send("Completion not found");
-      return;
+  router.get("/:id", async (req, res, next) => {
+    try {
+      const id: string = req.params.id;
+      const completion: Completion = await CompletionMiddleware.findOne(id);
+      res.send(completion);
+    } catch (e) {
+      next(e);
     }
-    const user: User | null = await UserRepository.findOneBy({
-      id: completion.user.id,
-    });
-    const task: Task | null = await TaskRepository.findOneBy({
-      id: completion.task.id,
-    });
-    user!.points -= task!.points;
-    await UserRepository.save(user!);
-    await CompletionRepository.remove(completion);
-    res.send("Completion deleted");
+  });
+
+  router.post("/:id", async (req, res, next) => {
+    try {
+      const id: string = req.params.id;
+      const data: Completion = req.body;
+      const completion: Completion = await CompletionMiddleware.update(
+        id,
+        data,
+      );
+      res.send(completion);
+    } catch (e) {
+      next(e);
+    }
+  });
+
+  router.delete("/:id", async (req, res, next) => {
+    try {
+      const id: string = req.params.id;
+      const name = await CompletionMiddleware.delete(id);
+      res.json({ message: `Succesfully removed completion: ${name}` });
+    } catch (e) {
+      next(e);
+    }
   });
 
   return router;
