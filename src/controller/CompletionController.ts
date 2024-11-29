@@ -57,8 +57,8 @@ const completionRoute = () => {
   router.delete("/:id", async (req, res, next) => {
     try {
       const id: string = req.params.id;
-      const name = await CompletionMiddleware.delete(id);
-      res.json({ message: `Succesfully removed completion: ${name}` });
+      const deleted = await CompletionMiddleware.delete(id);
+      res.json({ message: `Succesfully removed completion: ${deleted}` });
     } catch (e) {
       next(e);
     }

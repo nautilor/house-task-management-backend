@@ -50,6 +50,24 @@ class middleware {
     await UserRepository.remove(user);
     return user.name;
   };
+
+  handlePoints = async (id: string, points: number): Promise<User> => {
+    const user: User = await this.findOne(id);
+    user.points += points;
+    return await UserRepository.save(user);
+  };
+
+  incrementPoints = async (id: string, points: number): Promise<User> => {
+    const user: User = await this.findOne(id);
+    user.points += points;
+    return await UserRepository.save(user);
+  };
+
+  decrementPoints = async (id: string, points: number): Promise<User> => {
+    const user: User = await this.findOne(id);
+    user.points -= points;
+    return await UserRepository.save(user);
+  };
 }
 
 export const UserMiddleware = new middleware();

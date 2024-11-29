@@ -6,6 +6,7 @@ import {
 } from "@/param/CompletionParams";
 import { CompletionRepository } from "@/repository/CompletionRepository";
 import Ajv from "ajv";
+import { UserMiddleware } from "./UserMiddleware";
 
 class middleware {
   protected validator = new Ajv();
@@ -29,6 +30,12 @@ class middleware {
   };
 
   create = async (data: Completion): Promise<Completion> => {
+    const completion: Completion = await CompletionRepository.save(data, {
+      reload: true,
+    });
+    const userId = completion.user.id;
+    const points = completion.task.points;
+    await UserMiddleware.incrementPoints(userId, points);
     return await CompletionRepository.save(data);
   };
 
@@ -49,6 +56,9 @@ class middleware {
 
   delete = async (id: string): Promise<string> => {
     const completion: Completion = await this.findOne(id);
+    const userId = completion.user.id;
+    const points = completion.task.points;
+    await UserMiddleware.decrementPoints(userId, points);
     await CompletionRepository.remove(completion);
     return completion.id;
   };
