@@ -9,6 +9,7 @@ class middleware {
 
   buildWhere = (queryParams: TaskParams) => {
     const { categoryId } = queryParams;
+    queryParams.categoryId = undefined;
     return { category: { id: categoryId }, ...queryParams };
   };
 
