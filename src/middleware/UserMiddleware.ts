@@ -65,6 +65,9 @@ class middleware {
 
   decrementPoints = async (id: string, points: number): Promise<User> => {
     const user: User = await this.findOne(id);
+    if (user.points < points) {
+      throw Error(`${user.name} does not have enough points`);
+    }
     user.points -= points;
     return await UserRepository.save(user);
   };

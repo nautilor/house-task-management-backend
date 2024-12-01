@@ -30,11 +30,8 @@ class middleware {
   };
 
   create = async (data: Completion): Promise<Completion> => {
-    const completion: Completion = await CompletionRepository.save(data, {
-      reload: true,
-    });
-    const userId = completion.user.id;
-    const points = completion.task.points;
+    const userId = data.user.id;
+    const points = data.task.points;
     await UserMiddleware.incrementPoints(userId, points);
     return await CompletionRepository.save(data);
   };
