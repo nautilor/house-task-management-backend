@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { QueryParamException } from "@exception/QueryParamException";
+import { BadRequestException } from "./BadRequestException";
 
 export const errorHandler = (
   err: Error,
@@ -7,7 +8,10 @@ export const errorHandler = (
   res: Response,
   next: NextFunction,
 ) => {
-  if (err instanceof QueryParamException) {
+  if (
+    err instanceof QueryParamException ||
+    err instanceof BadRequestException
+  ) {
     res.status(400).json({ message: err.message });
   } else if (err instanceof Error) {
     res.status(500).json({ message: err.message });

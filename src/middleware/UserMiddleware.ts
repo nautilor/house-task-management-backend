@@ -1,3 +1,4 @@
+import { BadRequestException } from "@/exception/BadRequestException";
 import { QueryParamException } from "@/exception/QueryParamException";
 import User from "@/model/User";
 import { UserParams, UserParamSchema } from "@/param/UserParams";
@@ -66,7 +67,7 @@ class middleware {
   decrementPoints = async (id: string, points: number): Promise<User> => {
     const user: User = await this.findOne(id);
     if (user.points < points) {
-      throw Error(`${user.name} does not have enough points`);
+      throw new BadRequestException(`${user.name} does not have enough points`);
     }
     user.points -= points;
     return await UserRepository.save(user);
