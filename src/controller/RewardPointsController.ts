@@ -22,7 +22,6 @@ const rewardedPointsRoute = () => {
   router.post("/", async (req, res, next) => {
     try {
       const rewardedPoints: RewardedPoints = req.body;
-      console.log(rewardedPoints);
       const newRewardedPoints =
         await RewardedPointsMiddleware.create(rewardedPoints);
       res.send(newRewardedPoints);

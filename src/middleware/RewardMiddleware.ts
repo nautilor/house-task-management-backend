@@ -17,12 +17,15 @@ class middleware {
       throw new QueryParamException(this.validator.errorsText());
     }
     const where = this.buildWhere(queryParams);
-    return RewardRepository.find({
+    const rewards: Reward[] = await RewardRepository.find({
       where,
       order: {
         name: "ASC",
       },
+      relations: ["rewarded"],
     });
+    console.log(rewards);
+    return rewards;
   };
 
   create = async (data: Reward): Promise<Reward> => {
@@ -30,8 +33,9 @@ class middleware {
   };
 
   findOne = async (id: string): Promise<Reward> => {
-    const reward: Reward | null = await RewardRepository.findOneBy({
-      id,
+    const reward: Reward | null = await RewardRepository.findOne({
+      where: { id },
+      relations: ["rewarded"],
     });
     if (!reward) {
       throw new Error("Reward not found with id: " + id);

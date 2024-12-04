@@ -64,7 +64,7 @@ class middleware {
   delete = async (id: string): Promise<string> => {
     const rewardedPoints: RewardedPoints = await this.findOne(id);
     const userId = rewardedPoints.user.id;
-    const points = rewardedPoints.task.points;
+    const points = rewardedPoints.reward.points;
     await UserMiddleware.incrementPoints(userId, points);
     await RewardedPointsRepository.remove(rewardedPoints);
     return rewardedPoints.id;

@@ -15,7 +15,7 @@ class Reward {
   @Column({ nullable: false, default: "#282828" })
   color!: string;
 
-  @OneToMany(() => RewardedPoints, (rewarded) => rewarded.user)
+  @OneToMany(() => RewardedPoints, (rewarded) => rewarded.reward)
   rewarded!: RewardedPoints[];
 }
 
