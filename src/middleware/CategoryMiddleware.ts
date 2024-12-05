@@ -1,3 +1,4 @@
+import { BadRequestException } from "@/exception/BadRequestException";
 import { QueryParamException } from "@/exception/QueryParamException";
 import Category from "@/model/Category";
 import { CategoryParams, CategoryParamSchema } from "@/param/CategoryParams";
@@ -27,6 +28,10 @@ class middleware {
   };
 
   create = async (data: Category): Promise<Category> => {
+    if (await CategoryRepository.existsBy({ name: data.name }))
+      throw new BadRequestException(
+        "Category already exists with name: " + data.name,
+      );
     return await CategoryRepository.save(data);
   };
 
