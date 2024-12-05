@@ -24,7 +24,6 @@ class middleware {
       },
       relations: ["rewarded"],
     });
-    console.log(rewards);
     return rewards;
   };
 
