@@ -7,6 +7,7 @@ import {
 import { CompletionRepository } from "@/repository/CompletionRepository";
 import Ajv from "ajv";
 import { UserMiddleware } from "./UserMiddleware";
+import { MoreThan } from "typeorm";
 
 class middleware {
   protected validator = new Ajv();
@@ -21,6 +22,25 @@ class middleware {
       throw new QueryParamException(this.validator.errorsText());
     }
     const where = this.buildWhere(queryParams);
+    return CompletionRepository.find({
+      where,
+      order: {
+        timestamp: "ASC",
+      },
+    });
+  };
+
+  findCurrentWeekForTask = async (taskId: string): Promise<Completion[]> => {
+    const today = new Date();
+    const dayOfWeek = today.getDay(); // 0 = Sunday, 1 = Monday, etc.
+    const firstDay = new Date(today);
+    // always start from Monday
+    firstDay.setDate(today.getDate() - dayOfWeek + 1);
+    firstDay.setHours(0, 0, 0, 0);
+    const where = {
+      timestamp: MoreThan(firstDay),
+      task: { id: taskId },
+    };
     return CompletionRepository.find({
       where,
       order: {

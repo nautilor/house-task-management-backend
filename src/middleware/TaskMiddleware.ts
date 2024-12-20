@@ -3,6 +3,7 @@ import Task from "@/model/Task";
 import { TaskParams, TaskParamSchema } from "@/param/TaskParams";
 import { TaskRepository } from "@/repository/TaskRepository";
 import Ajv from "ajv";
+import { CompletionMiddleware } from "@middleware/CompletionMiddleware";
 
 class middleware {
   protected validator = new Ajv();
@@ -19,7 +20,7 @@ class middleware {
       throw new QueryParamException(this.validator.errorsText());
     }
     const where = this.buildWhere(queryParams);
-    return TaskRepository.find({
+    const tasks: Task[] = await TaskRepository.find({
       where,
       order: {
         category: {
@@ -29,6 +30,12 @@ class middleware {
       },
       relations: ["completions"],
     });
+    for (const task of tasks) {
+      task.completions = await CompletionMiddleware.findCurrentWeekForTask(
+        task.id,
+      );
+    }
+    return tasks;
   };
 
   create = async (data: Task): Promise<Task> => {
@@ -42,6 +49,9 @@ class middleware {
     if (!task) {
       throw new Error("Task not found with id: " + id);
     }
+    task.completions = await CompletionMiddleware.findCurrentWeekForTask(
+      task.id,
+    );
     return task;
   };
 
