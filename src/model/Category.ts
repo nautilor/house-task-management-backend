@@ -9,7 +9,7 @@ class Category {
   @Column({ nullable: false })
   name!: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, default: "#282828" })
   color!: string;
 
   @OneToMany(() => Task, (task) => task.category)

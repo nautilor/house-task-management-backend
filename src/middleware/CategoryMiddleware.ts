@@ -1,4 +1,5 @@
 import { BadRequestException } from "@/exception/BadRequestException";
+import { NotFoundException } from "@/exception/NotFoundException";
 import { QueryParamException } from "@/exception/QueryParamException";
 import Category from "@/model/Category";
 import { CategoryParams, CategoryParamSchema } from "@/param/CategoryParams";
@@ -10,6 +11,12 @@ class middleware {
 
   buildWhere = (queryParams: CategoryParams) => {
     return { ...queryParams };
+  };
+
+  validateBody = (category: Category) => {
+    if (category.name === undefined || category.name === "") {
+      throw new BadRequestException("Category name is required");
+    }
   };
 
   find = async (queryParams: CategoryParams): Promise<Category[]> => {
@@ -28,6 +35,7 @@ class middleware {
   };
 
   create = async (data: Category): Promise<Category> => {
+    this.validateBody(data);
     if (await CategoryRepository.existsBy({ name: data.name }))
       throw new BadRequestException(
         "Category already exists with name: " + data.name,
@@ -40,13 +48,18 @@ class middleware {
       id,
     });
     if (!category) {
-      throw new Error("Category not found with id: " + id);
+      throw new NotFoundException("Category not found with id: " + id);
     }
     return category;
   };
 
   update = async (id: string, data: Category): Promise<Category> => {
+    this.validateBody(data);
     const category: Category = await this.findOne(id);
+    if (await CategoryRepository.existsBy({ name: data.name }))
+      throw new BadRequestException(
+        "Category already exists with name: " + data.name,
+      );
     return await CategoryRepository.save({ ...category, ...data });
   };
 
