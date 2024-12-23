@@ -35,7 +35,7 @@ class middleware {
     const dayOfWeek = today.getDay(); // 0 = Sunday, 1 = Monday, etc.
     const firstDay = new Date(today);
     // always start from Monday
-    firstDay.setDate(today.getDate() - dayOfWeek + 1);
+    firstDay.setDate(today.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1));
     firstDay.setHours(0, 0, 0, 0);
     const where = {
       timestamp: MoreThan(firstDay),
