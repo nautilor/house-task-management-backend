@@ -3,6 +3,7 @@ import Reward from "@/model/Reward";
 import { RewardParams, RewardParamSchema } from "@/param/RewardParams";
 import { RewardRepository } from "@/repository/RewardRepository";
 import Ajv from "ajv";
+import { RewardedPointsMiddleware } from "@middleware/RewardedPointsMiddleware";
 
 class middleware {
   protected validator = new Ajv();
@@ -24,6 +25,12 @@ class middleware {
       },
       relations: ["rewarded"],
     });
+
+    for (const reward of rewards) {
+      reward.rewarded = await RewardedPointsMiddleware.findCurrentWeekForReward(
+        reward.id,
+      );
+    }
     return rewards;
   };
 
@@ -39,6 +46,9 @@ class middleware {
     if (!reward) {
       throw new Error("Reward not found with id: " + id);
     }
+    reward.rewarded = await RewardedPointsMiddleware.findCurrentWeekForReward(
+      reward.id,
+    );
     return reward;
   };
 
