@@ -16,6 +16,10 @@ import {
   REWARDED_POINTS_BASE_PATH,
   rewardedPointsRoute,
 } from "@controller/RewardPointsController";
+import {
+  FRIDGEITEM_BASE_PATH,
+  fridgeitemRoute,
+} from "@controller/FridgeItemController";
 
 const router = express.Router();
 
@@ -27,5 +31,6 @@ router.use(TASK_BASE_PATH, taskRoute());
 router.use(COMPLETION_BASE_PATH, completionRoute());
 router.use(REWARD_BASE_PATH, rewardRoute());
 router.use(REWARDED_POINTS_BASE_PATH, rewardedPointsRoute());
+router.use(FRIDGEITEM_BASE_PATH, fridgeitemRoute());
 
 export default router;
