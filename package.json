@@ -1,6 +1,6 @@
 {
   "name": "htm-backend",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "house task management backend",
   "main": "src/app.ts",
   "scripts": {
