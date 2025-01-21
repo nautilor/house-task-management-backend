@@ -23,6 +23,7 @@ class middleware {
     return FridgeItemRepository.find({
       where,
       order: {
+        quantity: "DESC",
         index: "DESC",
       },
       relations: [],
