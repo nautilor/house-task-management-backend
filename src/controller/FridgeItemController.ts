@@ -3,7 +3,7 @@ import FridgeItem from "@model/FridgeItem";
 import { FridgeItemParams } from "@param/FridgeItemParams";
 import { Router, Request } from "express";
 
-const FRIDGEITEM_BASE_PATH = "/fridge";
+const FRIDGEITEM_BASE_PATH = "/fridge/items";
 
 const fridgeitemRoute = () => {
   const router = Router();

@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
+import FridgeCategory from "@model/FridgeCategory";
 
 @Entity()
 class FridgeItem {
@@ -16,6 +17,12 @@ class FridgeItem {
 
   @Column({ nullable: false, default: 1 })
   quantity!: number;
+
+  @ManyToOne(() => FridgeCategory, (category) => category.items, {
+    nullable: false,
+    eager: true,
+  })
+  category!: FridgeCategory;
 }
 
 export default FridgeItem;
