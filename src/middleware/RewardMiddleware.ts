@@ -54,6 +54,7 @@ class middleware {
 
   update = async (id: string, data: Reward): Promise<Reward> => {
     const reward: Reward = await this.findOne(id);
+    data.rewarded = reward.rewarded;
     return await RewardRepository.save({ ...reward, ...data });
   };
 
