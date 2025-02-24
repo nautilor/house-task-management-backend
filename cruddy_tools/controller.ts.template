@@ -1,0 +1,66 @@
+
+import { FILENAMEMiddleware } from "@middleware/FILENAMEMiddleware";
+import FILENAME from "@model/FILENAME";
+import { FILENAMEParams } from "@param/FILENAMEParams";
+import { Router, Request } from "express";
+
+const FILENAME_UPPER_BASE_PATH = "/FILENAME_LOWERs";
+
+const FILENAME_LOWERRoute = () => {
+  const router = Router();
+  type FindRequest = Request<{}, any, any, FILENAMEParams>;
+
+  router.get("/", async (req: FindRequest, res, next) => {
+    try {
+      const FILENAME_LOWERs: FILENAME[] = await FILENAMEMiddleware.find(req.query);
+      res.send(FILENAME_LOWERs);
+    } catch (e) {
+      next(e);
+    }
+  });
+
+  router.post("/", async (req, res, next) => {
+    try {
+      const FILENAME_LOWER: FILENAME = req.body;
+      const newFILENAME = await FILENAMEMiddleware.create(FILENAME_LOWER);
+      res.send(newFILENAME);
+    } catch (e) {
+      next(e);
+    }
+  });
+
+  router.get("/:id", async (req, res, next) => {
+    try {
+      const id: string = req.params.id;
+      const FILENAME_LOWER: FILENAME = await FILENAMEMiddleware.findOne(id);
+      res.send(FILENAME_LOWER);
+    } catch (e) {
+      next(e);
+    }
+  });
+
+  router.post("/:id", async (req, res, next) => {
+    try {
+      const id: string = req.params.id;
+      const data: FILENAME = req.body;
+      const FILENAME_LOWER: FILENAME = await FILENAMEMiddleware.update(id, data);
+      res.send(FILENAME_LOWER);
+    } catch (e) {
+      next(e);
+    }
+  });
+
+  router.delete("/:id", async (req, res, next) => {
+    try {
+      const id: string = req.params.id;
+      const name = await FILENAMEMiddleware.delete(id);
+      res.json({ message: `Succesfully removed FILENAME_LOWER: ${name}` });
+    } catch (e) {
+      next(e);
+    }
+  });
+
+  return router;
+};
+
+export { FILENAME_UPPER_BASE_PATH, FILENAME_LOWERRoute };

@@ -1,0 +1,55 @@
+
+import { QueryParamException } from "@exception/QueryParamException";
+import FILENAME from "@model/FILENAME";
+import { FILENAMEParams, FILENAMEParamSchema } from "@param/FILENAMEParams";
+import { FILENAMERepository } from "@repository/FILENAMERepository";
+import Ajv from "ajv";
+
+class middleware {
+  protected validator = new Ajv();
+
+  buildWhere = (queryParams: FILENAMEParams) => {
+    return { ...queryParams };
+  };
+
+  find = async (queryParams: FILENAMEParams): Promise<FILENAME[]> => {
+    const valid = this.validator.validate(FILENAMEParamSchema, queryParams);
+    if (!valid) {
+      throw new QueryParamException(this.validator.errorsText());
+    }
+    const where = this.buildWhere(queryParams);
+    return FILENAMERepository.find({
+      where,
+      order: {
+      },
+      relations: [],
+    });
+  };
+
+  create = async (data: FILENAME): Promise<FILENAME> => {
+    return await FILENAMERepository.save(data);
+  };
+
+  findOne = async (id: string): Promise<FILENAME> => {
+    const FILENAME_LOWER: FILENAME | null = await FILENAMERepository.findOneBy({
+      id,
+    });
+    if (!FILENAME_LOWER) {
+      throw new Error("FILENAME not found with id: " + id);
+    }
+    return FILENAME_LOWER;
+  };
+
+  update = async (id: string, data: FILENAME): Promise<FILENAME> => {
+    const FILENAME_LOWER: FILENAME = await this.findOne(id);
+    return await FILENAMERepository.save({ ...FILENAME_LOWER, ...data });
+  };
+
+  delete = async (id: string): Promise<string> => {
+    const FILENAME_LOWER: FILENAME = await this.findOne(id);
+    await FILENAMERepository.remove(FILENAME_LOWER);
+    return FILENAME_LOWER.id;
+  };
+}
+
+export const FILENAMEMiddleware = new middleware();
