@@ -29,6 +29,8 @@ import {
   CUSTOM_ELEMENT_BASE_PATH,
   customElementRoute,
 } from "@controller/CustomElementController";
+import { VEGETABLE_BASE_PATH, vegetableRoute } from "./VegetableController";
+import { RECIPE_BASE_PATH, recipeRoute } from "./RecipeController";
 
 const router = express.Router();
 
@@ -43,5 +45,7 @@ router.use(REWARDED_POINTS_BASE_PATH, rewardedPointsRoute());
 router.use(FRIDGEITEM_BASE_PATH, fridgeitemRoute());
 router.use(FRIDGECATEGORY_BASE_PATH, fridgeCategoryRoute());
 router.use(CUSTOM_ELEMENT_BASE_PATH, customElementRoute());
+router.use(VEGETABLE_BASE_PATH, vegetableRoute());
+router.use(RECIPE_BASE_PATH, recipeRoute());
 
 export default router;
