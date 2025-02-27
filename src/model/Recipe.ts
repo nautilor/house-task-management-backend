@@ -21,7 +21,9 @@ class Recipe {
   @Column({ nullable: false, default: false })
   extra!: boolean;
 
-  @ManyToMany(() => Vegetable, (vegetable) => vegetable.recipes)
+  @ManyToMany(() => Vegetable, (vegetable) => vegetable.recipes, {
+    eager: true,
+  })
   @JoinTable({ name: "recipe_vegetable" })
   vegetables!: Vegetable[];
 }
