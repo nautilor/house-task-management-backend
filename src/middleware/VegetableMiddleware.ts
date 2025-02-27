@@ -19,7 +19,7 @@ class middleware {
     const where = this.buildWhere(queryParams);
     return VegetableRepository.find({
       where,
-      order: {},
+      order: { name: "ASC" },
       relations: ["recipes"],
     });
   };
