@@ -1,14 +1,36 @@
 import { QueryParamException } from "@exception/QueryParamException";
 import Vegetable from "@model/Vegetable";
-import { VegetableParams, VegetableParamSchema } from "@param/VegetableParams";
+import {
+  VegetableParams,
+  VegetableParamSchema,
+  VegetableQueryParams,
+} from "@param/VegetableParams";
 import { VegetableRepository } from "@repository/VegetableRepository";
 import Ajv from "ajv";
+import { ILike } from "typeorm";
 
 class middleware {
   protected validator = new Ajv();
 
   buildWhere = (queryParams: VegetableParams) => {
-    return { ...queryParams };
+    const query: VegetableQueryParams[] = [];
+    if (queryParams.name) {
+      const vegetableKeywords = queryParams.name.split(",");
+      vegetableKeywords.forEach((keyword) => {
+        query.push({ name: ILike(`%${keyword.trim()}%`) });
+      });
+    }
+    if (queryParams.recipeName) {
+      const keywords = queryParams.recipeName.split(",");
+      keywords.map((keyword) =>
+        query.push({
+          recipes: {
+            name: ILike(`%${keyword.trim()}%`),
+          },
+        }),
+      );
+    }
+    return query;
   };
 
   find = async (queryParams: VegetableParams): Promise<Vegetable[]> => {
