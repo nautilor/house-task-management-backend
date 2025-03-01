@@ -12,6 +12,9 @@ class FridgeCategory {
   @Column({ nullable: true, default: "#282828" })
   color!: string;
 
+  @Column({ nullable: true, default: 0 })
+  index!: number;
+
   @OneToMany(() => FridgeItem, (item) => item.category)
   items!: FridgeItem[];
 }

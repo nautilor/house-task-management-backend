@@ -28,7 +28,7 @@ class middleware {
     return FridgeCategoryRepository.find({
       where,
       order: {
-        name: "ASC",
+        index: "DESC",
         items: {
           quantity: "DESC",
           index: "DESC",
