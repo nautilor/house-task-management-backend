@@ -9,6 +9,7 @@ I run this project on a Raspberry Pi 4 with a PostgreSQL database on my local ne
 ## Technologies
 
 - [Node.js](https://nodejs.org/)
+- [Typescript](https://www.typescriptlang.org/)
 - [Express](https://expressjs.com/)
 - [PostgreSQL](https://www.postgresql.org/)
 - [TypeORM](https://typeorm.io/)
