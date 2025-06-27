@@ -56,6 +56,7 @@ class middleware {
   };
 
   update = async (id: string, data: Task): Promise<Task> => {
+    data.completions = data.completions || undefined; // Prevent saving completions
     const task: Task = await this.findOne(id);
     return await TaskRepository.save({ ...task, ...data });
   };
